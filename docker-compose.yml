@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_DB: crud
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 123
+      PG_DATA: /var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    container_name: database_crud
+volumes:
+  pgdata:
