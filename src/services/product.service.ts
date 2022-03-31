@@ -1,10 +1,17 @@
+import { ProductDtoResponse } from './../dtos/responses/product.dto.response';
 import { ProductRequest, ProductRepository } from './../repositories/product.repository';
 
 export class ProductService {
 
     async create(productRequest: ProductRequest) {
         const repository = new ProductRepository();
-        return await repository.create(productRequest);
+        const product = await repository.create(productRequest);
+        const data: ProductDtoResponse = {
+            id: product.id,
+            name: product.name,
+            price: product.price
+        }
+        return data
     }
 
     async list() {

@@ -1,14 +1,15 @@
+import { ProductDtoRequest } from './../dtos/requests/product.dto.request';
 import { ProductService } from './../services/product.service';
 import { Request, Response } from "express";
 
 export class ProductController {
 
     async create(request: Request, response: Response) {
-        const { name, description, price } = request.body;
+        const data: ProductDtoRequest = request.body;
 
         const service = new ProductService();
 
-        const result = await service.create({ name, description, price });
+        const result = await service.create(data);
 
         if (result instanceof Error) {
             return response.status(400).json(result.message);
