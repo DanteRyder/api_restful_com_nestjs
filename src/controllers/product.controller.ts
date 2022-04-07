@@ -1,22 +1,35 @@
 import { ProductDtoRequest } from './../dtos/requests/product.dto.request';
 import { ProductService } from './../services/product.service';
 import { Request, Response } from "express";
+import { plainToClass } from 'class-transformer';
+import { validate } from 'class-validator';
 
 export class ProductController {
 
     async create(request: Request, response: Response) {
-        const data: ProductDtoRequest = request.body;
+        const data = plainToClass(ProductDtoRequest, request.body);
 
-        const service = new ProductService();
+        validate(data, { skipMissingProperties: true }).then(async errors => {
+            if (errors.length > 0) {
+                let errorTexts = Array();
+                for (const errorItem of errors) {
+                    errorTexts = errorTexts.concat(errorItem.constraints);
+                }
+                return response.status(400).send(errorTexts);
+            }
+            else {
+                const service = new ProductService();
 
-        const result = await service.create(data);
+                const result = await service.create(data);
 
-        if (result instanceof Error) {
-            return response.status(400).json(result.message);
-        }
-        else {
-            return response.json(result);
-        }
+                if (result instanceof Error) {
+                    return response.status(400).json(result.message);
+                }
+                else {
+                    return response.json(result);
+                }
+            }
+        })
     }
 
     async list(request: Request, response: Response) {
